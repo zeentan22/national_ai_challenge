@@ -10,9 +10,9 @@ from sgnlp.models.sentic_gcn import(
 tokenizer = SenticGCNBertTokenizer.from_pretrained("bert-base-uncased")
 
 config = SenticGCNBertConfig.from_pretrained(
-    "/Users/zeen22/Documents/sectic-gcn_model/senticgcnbert/config.json")
+    "./senticgcnbert/config.json")
 model = SenticGCNBertModel.from_pretrained(
-    "/Users/zeen22/Documents/sectic-gcn_model/senticgcnbert/pytorch_model.bin",
+    "./senticgcnbert/pytorch_model.bin",
     config=config
 )
 embed_config = SenticGCNBertEmbeddingConfig.from_pretrained("bert-base-uncased")
@@ -22,7 +22,7 @@ embed_model = SenticGCNBertEmbeddingModel.from_pretrained("bert-base-uncased",
 )
 preprocessor = SenticGCNBertPreprocessor(
     tokenizer=tokenizer, embedding_model=embed_model,
-    senticnet="/Users/zeen22/Documents/sectic-gcn_model/senticNet/senticnet.pickle",
+    senticnet="./senticNet/senticnet.pickle",
     device="cpu")
 
 postprocessor = SenticGCNBertPostprocessor()
