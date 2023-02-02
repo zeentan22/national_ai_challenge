@@ -91,7 +91,8 @@ class nlp_model:
             else:
                 aspect_result = {'count': 1, 'positive': 0,'netural': 0, 'negative':0}
                 aspect_result = self.helper_update_aspect_result(aspect_result, label)
-                results[aspect] = aspect_result
+                
+            results[aspect] = aspect_result
         return results
                 
 
