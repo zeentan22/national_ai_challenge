@@ -10,9 +10,10 @@ $ pip install -r requirements.txt
 $ python backend/manage.py runserver 
 ```
 
-## Usage
 We provide endpoints to be consumed at `localhost:8000/api/sentiment/`
+Full documentation can be viewed at `localhost:8000/docs/`
 
+### Querying SenticGCN for output
 Request Syntax:
 ```JSON
 POST /api/sentiment/ HTTP/1.1

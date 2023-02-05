@@ -1,14 +1,18 @@
-# service layer for calling SenticGCN model
+from abc import ABC, abstractmethod
 
-class SenticGCNService:
+class LanguageModelServiceInterface(ABC):
+    '''
+    Interface for NLP model service
+    '''
     def __init__(self):
-        self.model = None 
-        
-    def predict(self, input: str) -> dict:
+        self.model = None
+    
+    @abstractmethod
+    def predict(self, user_input: str) -> dict:
         '''
         Predicts aspect based user emotion from given language input
 
-        input: str
+        user_input: str
             Sentence from user conversation        
 
         rtype: List[dict[str, int]]
@@ -19,7 +23,37 @@ class SenticGCNService:
                     "price: 0,
                 }
         '''
-        return [
-            {'aspect': 'item1', 'emotion': 1},
-            {'aspect': 'item2', 'emotion': -1}
+        
+        raise NotImplementedError()
+
+    @abstractmethod
+    def clean_input(self, user_input: str) -> str:
+        '''
+        Cleans and prepares input into model
+        '''
+        return user_input
+
+
+class SenticGCNService(LanguageModelServiceInterface):
+    def __init__(self):
+        self.model = None 
+        
+    def predict(self, user_input: str) -> dict:
+        cleaned_input = self.clean_input(user_input)
+
+        test_output = [
+            {'aspect': 'food', 'emotion': 1},
+            {'aspect': 'price', 'emotion': 0},
+            {'aspect': 'service', 'emotion': -1},
         ]
+
+        return test_output
+
+    def clean_input(self, user_input: str) -> str:
+        # change this to tokenise your input
+
+        cleaned = user_input \
+                    .replace("(", "-LRB-") \
+                    .replace(")", "-RRB-")
+        
+        return cleaned
