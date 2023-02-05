@@ -1,4 +1,4 @@
-from model import nlp_model
+from model import NLPModel
 
 
 
@@ -33,10 +33,13 @@ inputs = [
     }
 ]
 
-model = nlp_model(inputs)
+model = NLPModel({"sentence": "I dislike the school environment ."})
 model.run()
 # print(repr(model))
-print(model.get_all_aspects_and_labels())
+
+print({"aspect": model.get_aspect(), "label": model.get_label()})
+
+#print(model.get_all_aspects_and_labels())
 
 {
 'school': {'count': 2, 'positive': 2, 'netural': 0, 'negative': 0}, 

@@ -7,29 +7,48 @@ from sgnlp.models.sentic_gcn import(
     SenticGCNBertPreprocessor,
     SenticGCNBertPostprocessor
 )
-tokenizer = SenticGCNBertTokenizer.from_pretrained("bert-base-uncased")
 
-config = SenticGCNBertConfig.from_pretrained(
-    "./senticgcnbert/config.json")
-model = SenticGCNBertModel.from_pretrained(
-    "./senticgcnbert/pytorch_model.bin",
-    config=config
-)
-embed_config = SenticGCNBertEmbeddingConfig.from_pretrained("bert-base-uncased")
+from rake_nltk import Rake
+import nltk 
+nltk.download('stopwords')
 
-embed_model = SenticGCNBertEmbeddingModel.from_pretrained("bert-base-uncased",
-    config=embed_config
-)
-preprocessor = SenticGCNBertPreprocessor(
-    tokenizer=tokenizer, embedding_model=embed_model,
-    senticnet="./senticNet/senticnet.pickle",
-    device="cpu")
 
-postprocessor = SenticGCNBertPostprocessor()
+class AspectExtraction:
+    def __init__(self):
+        self.model = Rake()
 
-class nlp_model:
-    def __init__(self, inputs):
+    def get_aspect(self, input: str) -> str:
+        self.model.extract_keywords_from_text(input) 
+        return self.model.get_ranked_phrases()[0]
+
+class NLPModel:
+    def __init__(self, *inputs: dict):
+        tokenizer = SenticGCNBertTokenizer.from_pretrained("bert-base-uncased")
+
+        config = SenticGCNBertConfig.from_pretrained(
+            "./senticgcnbert/config.json")
+        self.model = SenticGCNBertModel.from_pretrained(
+            "./senticgcnbert/pytorch_model.bin",
+            config=config
+        )
+        embed_config = SenticGCNBertEmbeddingConfig.from_pretrained("bert-base-uncased")
+
+        embed_model = SenticGCNBertEmbeddingModel.from_pretrained("bert-base-uncased",
+            config=embed_config
+        )
+        self.preprocessor = SenticGCNBertPreprocessor(
+            tokenizer=tokenizer, embedding_model=embed_model,
+            senticnet="./senticNet/senticnet.pickle",
+            device="cpu")
+
+        self.postprocessor = SenticGCNBertPostprocessor()
+
+        # aspect extraction
+        aspect_extractor = AspectExtraction()
+        for input in inputs:
+            input["aspects"] = [aspect_extractor.get_aspect(input["sentence"])]
         self.inputs = inputs
+
         self.output = None
 
     def __repr__(self):
@@ -39,9 +58,9 @@ class nlp_model:
         return rep
 
     def run(self):
-        processed_inputs, processed_indices = preprocessor(self.inputs)
-        raw_outputs = model(processed_indices)
-        post_outputs = postprocessor(processed_inputs=processed_inputs, model_outputs=raw_outputs)
+        processed_inputs, processed_indices = self.preprocessor(self.inputs)
+        raw_outputs = self.model(processed_indices)
+        post_outputs = self.postprocessor(processed_inputs=processed_inputs, model_outputs=raw_outputs)
         self.output = post_outputs
     
     """ getting the whole item in this format {'sentence': [], 'aspects': [[1]], 'labels':[1]}"""
@@ -94,9 +113,3 @@ class nlp_model:
                 
             results[aspect] = aspect_result
         return results
-                
-
-
-
-    
-
