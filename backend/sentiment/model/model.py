@@ -23,12 +23,18 @@ class AspectExtraction:
 
 class NLPModel:
     def __init__(self, *inputs: dict):
+
+        #import os
+        #print(os.getcwd())
+        #while True:
+        #    pass
+
         tokenizer = SenticGCNBertTokenizer.from_pretrained("bert-base-uncased")
 
         config = SenticGCNBertConfig.from_pretrained(
-            "./senticgcnbert/config.json")
+            "./sentiment/model/senticgcnbert/config.json")
         self.model = SenticGCNBertModel.from_pretrained(
-            "./senticgcnbert/pytorch_model.bin",
+            "./sentiment/model/senticgcnbert/pytorch_model.bin",
             config=config
         )
         embed_config = SenticGCNBertEmbeddingConfig.from_pretrained("bert-base-uncased")
@@ -38,17 +44,12 @@ class NLPModel:
         )
         self.preprocessor = SenticGCNBertPreprocessor(
             tokenizer=tokenizer, embedding_model=embed_model,
-            senticnet="./senticNet/senticnet.pickle",
+            senticnet="./sentiment/model/senticNet/senticnet.pickle",
             device="cpu")
 
         self.postprocessor = SenticGCNBertPostprocessor()
 
-        # aspect extraction
-        aspect_extractor = AspectExtraction()
-        for input in inputs:
-            input["aspects"] = [aspect_extractor.get_aspect(input["sentence"])]
-        self.inputs = inputs
-
+        self.inputs = None
         self.output = None
 
     def __repr__(self):
@@ -56,6 +57,14 @@ class NLPModel:
         print(self.output)
         rep = f"Model output is {self.output}"
         return rep
+
+    def set_input(self, *inputs):
+        # aspect extraction
+        aspect_extractor = AspectExtraction()
+        for input in inputs:
+            input["aspects"] = [aspect_extractor.get_aspect(input["sentence"])]
+        self.inputs = inputs
+        return self
 
     def run(self):
         processed_inputs, processed_indices = self.preprocessor(self.inputs)
