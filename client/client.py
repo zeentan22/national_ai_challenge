@@ -19,6 +19,8 @@ class Client:
 
 if __name__ == "__main__":
     client = Client(base_url="http://127.0.0.1:8000/")
-    resp = client.post("api/sentiment/", data={"user_input": "This is a sample input string!"})
+    #resp = client.post("api/sentiment/", data={"user_input": "I love school"})
+
+    resp = client.get("api/sentiment/")
 
     print(resp)
