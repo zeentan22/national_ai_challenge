@@ -4,22 +4,10 @@ import { ThreeCircles } from 'react-loader-spinner';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
 import { Pie, Bar } from 'react-chartjs-2';
 
-//settle layout
-//tryout input and uploading of files
-//based on input, perform analysis
-
 function App() {
-  const scrollRef = useRef(null);
-  const executeScroll = () => {scrollRef.current.scrollIntoView();} 
-  //const useMountEffect = fun => useEffect(fun, []); // i think it rerenders the page and scrolls to that portion
-  //useMountEffect(executeScroll);
 
-  const [sentence, setSentence] = useState('');
-  const [aspect, setAspect] = useState('');
-  const [file, setFile] = useState(null);
-  
-  const [toggle, setToggle] = useState(false);
-  const [status, setStatus] = useState(false);
+  const [toggle, setToggle] = useState(false); //toggling analyse button
+  const [status, setStatus] = useState(false); //status of get request 
   const [outputt, setOutputt] = useState({
     'school': {'count': 4, 'positive': 3, 'neutral': 0, 'negative': 1}, 
     'students': {'count': 4, 'positive': 2, 'neutral': 1, 'negative': 1}, 
@@ -27,104 +15,110 @@ function App() {
     'scripts': {'count': 5, 'positive': 0, 'neutral': 1, 'negative': 4},
     'exams': {'count': 6, 'positive': 1, 'neutral': 1, 'negative': 4},
     'colleagues': {'count': 1, 'positive': 0, 'neutral': 0, 'negative': 1}
-    });
+    }); //to store output of get request
+  
 
   let loading = 
-  <div style={{display:'flex', flexDirection:'column', alignItems:'center', }}>
-    <ThreeCircles
-      height="100"
-      width="100"
-      color="#4fa94d"
-      wrapperStyle={{}}
-      wrapperClass=""
-      visible={true}
-      ariaLabel="three-circles-rotating"
-      outerCircleColor=""
-      innerCircleColor=""
-      middleCircleColor=""
-    />
-    <p>Running our model through your inputs</p>
-  </div>
+    <div style={{display:'flex', flexDirection:'column', alignItems:'center', }}>
+      <ThreeCircles height="100" width="100" color="#4fa94d" visible={true} ariaLabel="three-circles-rotating" />
+      <p>Running our model through your inputs</p>
+    </div>
 
-let analysis = <div id="analysis" style={{marginTop:40}}></div>
-if (status) {
-  //formatting data for charts
-  ChartJS.register(ArcElement, Tooltip, Legend);
-  ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-  const data = {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+  
+  //data preparations for the chart + creation of charts
+
+  //the analysis div is empty until the data is ready to display
+  let analysis = <div style={{marginTop:40}}></div>
+  if (status) {
+    ChartJS.register(ArcElement, Tooltip, Legend);
+    ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+    
+    //aspect bar graph
+    const options_color_aspects = {
+      responsive: true,
+      plugins: {
+        title: {display: true, text: 'Summary of Aspects detected',}
+      }
+    };
+    const color_aspects = Object.keys(outputt).map(x => `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`);
+    const aspectCount = {
+      labels: Object.keys(outputt),
+      datasets: [{
+          label: 'Aspects',
+          data: Object.keys(outputt).map(x => outputt[x]['count']),
+          backgroundColor: color_aspects,
+          borderColor: color_aspects,
+          borderWidth: 1,
+        },
+      ],}
+
+    //emotions pie chart
+    const options_emotionsChart = {
+      responsive: true,
+      plugins: {
+        title: {display: true,text: 'Breakdown of the different emotions',}
+      }};
+    let emotions = [0, 0, 0];
+    for (const aspect in outputt) {
+        emotions[0] = emotions[0] + outputt[aspect]['positive'];
+        emotions[1] = emotions[1] + outputt[aspect]['neutral'];
+        emotions[2] = emotions[2] + outputt[aspect]['negative'];
+    }
+    const color_emotions = emotions.map(x => `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`);
+    const emotionsChart = {
+      labels: ["Positive", "Neutral", "Negative"],
+      datasets: [{
+          label: 'Count',
+          data: emotions, 
+          backgroundColor: color_emotions,
+          borderColor: color_emotions,
+          borderWidth: 1,
+        },
+      ],}
+
+    //aspect pie chart
+    const options_aspectsChart = {responsive: true,
+      plugins: {
+        title: {display: true, text: 'Summary of Aspects detected',
+        }
+      }};
+    let negativeAspects = Object.keys(outputt).sort(function(a, b) {
+        return outputt[b]['negative'] - outputt[a]['negative'];
+    }).splice(0,3)
+
+    const color_analysis = negativeAspects.map(x => `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`);
+    const aspectsChart = {labels: negativeAspects,
     datasets: [{
-        label: 'Occurences',
-        data: [12, 19, 3, 5, 2, 3],
+        label: 'Count',
+        data: [outputt[negativeAspects[0]]['negative'], outputt[negativeAspects[1]]['negative'], outputt[negativeAspects[2]]['negative'] ],
+        backgroundColor: color_analysis,
+        borderColor: color_analysis,
+        borderWidth: 1,
       },
     ],
-  };
-  
-  //data for aspect bar graph
-  const aspectCount = {labels: Object.keys(outputt),
-  datasets: [{
-      label: 'Aspect',
-      data: Object.keys(outputt).map(x => outputt[x]['count']),
-    },
-  ],}
-
-  //data for emotions pie chart
-  let emotions = [0, 0, 0];
-  for (const aspect in outputt) {
-      emotions[0] = emotions[0] + outputt[aspect]['positive'];
-      emotions[1] = emotions[1] + outputt[aspect]['neutral'];
-      emotions[2] = emotions[2] + outputt[aspect]['negative'];
   }
-  const emotionsChart = {labels: ["Positive", "Neutral", "Negative"],
-    datasets: [{
-        label: 'Emotions',
-        data: emotions
-      },
-    ],}
 
-  //data for aspect pie chart
-  let negativeAspects = Object.keys(outputt).sort(
-    function(a, b) {
-      return outputt[b]['negative'] - outputt[a]['negative'];
-  }).splice(0,3)
-
-  const aspectsChart = {labels: negativeAspects,
-  datasets: [{
-      label: 'Top 3 Most Negative Aspects',
-      data: [outputt[negativeAspects[0]]['negative'], outputt[negativeAspects[1]]['negative'], outputt[negativeAspects[2]]['negative'] ]
-    },
-  ],}
-
-
+  //this is the component that will be loaded after data is processed successfully
   analysis = 
-  <div id="analysis" style={{marginTop:40, display:'flex', flexDirection:'column', alignItems:'center'}}>
-    <div style={{height:'60vh', width:'40%'}}>
-      <Bar data={aspectCount}/>
+    <div id="analysis" style={{marginTop:40, display:'flex', flexDirection:'column', alignItems:'center'}}>
+      <div style={{height:'60vh', width:'40%'}}>
+        <Bar data={aspectCount} options={options_color_aspects}/>
+      </div>
+
+      <div style={{display:'flex', height:'60vh', width:'100%', justifyContent:'space-around',}}>
+        <div style={{width:"28%"}}><Pie data={emotionsChart} options={options_emotionsChart}/></div>
+        <div style={{width:"28%"}}><Pie data={aspectsChart} options={options_aspectsChart}/></div>
+      </div>
     </div>
+  }
+    
 
-    <div style={{display:'flex', height:'60vh', width:'100%', justifyContent:'space-around',}}>
-      <div style={{width:"28%"}}><Pie data={emotionsChart}/></div>
-      <div style={{width:"28%"}}><Pie data={aspectsChart}/></div>
-    </div>
-  </div>
-}
-  
-
-
-const handleAnalysis = () => {
-  //check for file type, if file type is not correct, raise an alert
-  let db;
-  //toggling to true starts the loading animation
-  setToggle(true);
-  //timeout function is to simulate retrieving of data
-  retrieveData(db);
-}
-
-
-
-const retrieveData = async(db) => {
-  setTimeout(() => {setToggle(false); setStatus(true);}, 2000);
-}
+  const handleAnalysis = () => {
+    //toggling to true starts the loading animation, setting toggling to false stops the animation
+    setToggle(true);
+    //timeout function is to simulate retrieving of data, setting status to true renders the analysis component
+    setTimeout(() => {setToggle(false); setStatus(true);}, 2000);
+  }
 
   return (
     <div style={{display:'flex', flexDirection:'column', height:600}}>
