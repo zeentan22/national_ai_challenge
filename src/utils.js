@@ -105,10 +105,3 @@ export async function getAllData() {
   // console.log(data);
   return data;
 }
-
-let data = getAllData();
-
-data.then((res) => {
-  let final = convert_data(res);
-  console.log(final);
-});

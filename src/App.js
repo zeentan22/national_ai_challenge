@@ -17,12 +17,12 @@ function App() {
   const [toggle, setToggle] = useState(false); //toggling analyse button
   const [status, setStatus] = useState(false); //status of get request
   const [outputt, setOutputt] = useState({
-    // school: { count: 4, positive: 3, neutral: 0, negative: 1 },
-    // students: { count: 4, positive: 2, neutral: 1, negative: 1 },
-    // meeting: { count: 1, positive: 1, neutral: 0, negative: 0 },
-    // scripts: { count: 5, positive: 0, neutral: 1, negative: 4 },
-    // exams: { count: 6, positive: 1, neutral: 1, negative: 4 },
-    // colleagues: { count: 1, positive: 0, neutral: 0, negative: 1 },
+    school: { count: 4, positive: 3, neutral: 0, negative: 1 },
+    students: { count: 4, positive: 2, neutral: 1, negative: 1 },
+    meeting: { count: 1, positive: 1, neutral: 0, negative: 0 },
+    scripts: { count: 5, positive: 0, neutral: 1, negative: 4 },
+    exams: { count: 6, positive: 1, neutral: 1, negative: 4 },
+    colleagues: { count: 1, positive: 0, neutral: 0, negative: 1 },
   }); //to store output of get request
 
   let loading = (
@@ -186,18 +186,17 @@ function App() {
   const handleAnalysis = () => {
     //toggling to true starts the loading animation, setting toggling to false stops the animation
     setToggle(true);
-
+    let data = getAllData();
+    data.then((res) => {
+      let a = convert_data(res);
+      console.log(a);
+      setOutputt(convert_data(res));
+    });
     //timeout function is to simulate retrieving of data, setting status to true renders the analysis component
     setTimeout(() => {
       setToggle(false);
       setStatus(true);
-      let data = getAllData();
-      data.then((res) => {
-        let a = convert_data(res);
-        console.log(a);
-        setOutputt(convert_data(res));
-      });
-    }, 2000);
+    }, 3000);
   };
 
   return (
