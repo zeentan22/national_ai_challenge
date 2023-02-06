@@ -90,9 +90,9 @@ function App() {
     };
     let emotions = [0, 0, 0];
     for (const aspect in outputt) {
-      emotions[0] = emotions[0] + outputt[aspect]["positive"];
-      emotions[1] = emotions[1] + outputt[aspect]["neutral"];
-      emotions[2] = emotions[2] + outputt[aspect]["negative"];
+      emotions[0] = emotions[0] + outputt[aspect].positive;
+      emotions[1] = emotions[1] + outputt[aspect].neutral;
+      emotions[2] = emotions[2] + outputt[aspect].negative;
     }
     const color_emotions = emotions.map(
       (x) =>
@@ -188,9 +188,13 @@ function App() {
     setToggle(true);
     let data = getAllData();
     data.then((res) => {
+      // console.log(res);
       let a = convert_data(res);
       console.log(a);
-      setOutputt(convert_data(res));
+      console.log(a["love"]["count"]);
+      console.log("---");
+      setOutputt({ ...a });
+      console.log(a);
     });
     //timeout function is to simulate retrieving of data, setting status to true renders the analysis component
     setTimeout(() => {
@@ -231,6 +235,24 @@ function App() {
         }}
       >
         <div>
+          <div>
+            <form>
+              <label style={{ margin: "0 10px 0 0" }}>
+                Sentence:
+                <input
+                  style={{ margin: "0 10px 0 0" }}
+                  type="text"
+                  name="Sentence"
+                />
+              </label>
+              <input
+                style={{ margin: "0 10px 0 0" }}
+                type="submit"
+                value="Submit"
+              />
+            </form>
+          </div>
+
           <div
             style={{ display: "flex", alignItems: "center", height: "100%" }}
           >

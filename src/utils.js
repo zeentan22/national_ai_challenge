@@ -74,11 +74,11 @@ export const convert_data = (input) => {
     for (let j in historydata) {
       let aspect = historydata[j].aspect;
       let emotion = historydata[j].emotion;
-      console.log(emotion);
-      console.log(aspect);
+      // console.log(emotion);
+      // console.log(aspect);
       let temp_res = {};
       if (!(aspect in result)) {
-        console.log("here");
+        // console.log("here");
         temp_res = { count: 1, positive: 0, neutral: 0, negative: 0 };
         temp_res = update_aspect_result_label(temp_res, emotion);
       } else {
