@@ -89,7 +89,7 @@ POST /api/sentiment/ HTTP/1.1
 Content-type: application/json
 
 {
-    "user_input": "This is an example of a natural language input!"
+    "user_input": "Seeing my students improve gives me a sense of satisfaction."
 }
 ```
 
@@ -101,12 +101,12 @@ Content-type: application/json
 
 [
   {
-    "time": "2019-08-24T14:15:22Z",
+    "time": "2022-08-24T14:15:22ZZ",
     "history_data": [
       {
         "id": 0,
-        "aspect": "string",
-        "emotion": -1,
+        "aspect": "students",
+        "emotion": 1,
         "history": 0
       }
     ]
@@ -128,7 +128,7 @@ Content-type: application/json
 
 [
   {
-    "time": "2019-08-24T14:15:22Z",
+    "time": "2022-08-24T14:15:22Z",
     "history_data": [
       {
         "id": 0,
@@ -139,7 +139,7 @@ Content-type: application/json
     ]
   },
   {
-    "time": "2019-08-25T17:11:05Z",
+    "time": "2022-08-25T17:11:05Z",
     "history_data": [
       {
         "id": 0,
