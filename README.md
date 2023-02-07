@@ -1,5 +1,15 @@
 # National AI Challenge 2023
 
+## Testing our project
+
+## React Framework Frontend
+
+```bash
+$ npm install
+```
+```bash
+$ npm start
+```
 
 ## Django REST Backend
 ```bash
