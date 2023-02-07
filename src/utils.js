@@ -70,7 +70,7 @@ export const convert_data = (input) => {
   let result = {};
   for (let index in input) {
     let historydata = input[index].history_data;
-    console.log(historydata);
+    // console.log(historydata);
     for (let j in historydata) {
       let aspect = historydata[j].aspect;
       let emotion = historydata[j].emotion;
@@ -106,10 +106,10 @@ export async function getAllData() {
   return data;
 }
 
-export async function sendSentence(sentence) {
-  await fetch("http://127.0.0.1:8000/api/sentiment/", {
+export async function sendSentence(obj) {
+  fetch("http://127.0.0.1:8000/api/sentiment/", {
     method: "POST",
-    body: sentence, // The data
+    body: obj, // The data
     headers: {
       "Content-type": "application/json", // The type of data you're sending
     },
