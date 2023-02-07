@@ -10,48 +10,48 @@ let used_output = {
 }; //to store output of get request
 
 // example data from jerry api
-let output_from_api = [
-  {
-    time: "2019-08-24T14:15:22Z",
-    history_data: [
-      {
-        id: 0,
-        aspect: "school",
-        emotion: -1,
-        history: 0,
-      },
-      {
-        id: 1,
-        aspect: "student",
-        emotion: -1,
-        history: 0,
-      },
-    ],
-  },
-  {
-    time: "2019-09-24T14:15:22Z",
-    history_data: [
-      {
-        id: 0,
-        aspect: "meetings",
-        emotion: 1,
-        history: 0,
-      },
-      {
-        id: 1,
-        aspect: "scripts",
-        emotion: -1,
-        history: 0,
-      },
-      {
-        id: 2,
-        aspect: "student",
-        emotion: -1,
-        history: 0,
-      },
-    ],
-  },
-];
+// let output_from_api = [
+//   {
+//     time: "2019-08-24T14:15:22Z",
+//     history_data: [
+//       {
+//         id: 0,
+//         aspect: "school",
+//         emotion: -1,
+//         history: 0,
+//       },
+//       {
+//         id: 1,
+//         aspect: "student",
+//         emotion: -1,
+//         history: 0,
+//       },
+//     ],
+//   },
+//   {
+//     time: "2019-09-24T14:15:22Z",
+//     history_data: [
+//       {
+//         id: 0,
+//         aspect: "meetings",
+//         emotion: 1,
+//         history: 0,
+//       },
+//       {
+//         id: 1,
+//         aspect: "scripts",
+//         emotion: -1,
+//         history: 0,
+//       },
+//       {
+//         id: 2,
+//         aspect: "student",
+//         emotion: -1,
+//         history: 0,
+//       },
+//     ],
+//   },
+// ];
 
 // helper function
 let update_aspect_result_label = (current_res, label) => {
