@@ -105,3 +105,13 @@ export async function getAllData() {
   // console.log(data);
   return data;
 }
+
+export async function sendSentence(sentence) {
+  await fetch("http://127.0.0.1:8000/api/sentiment/", {
+    method: "POST",
+    body: sentence, // The data
+    headers: {
+      "Content-type": "application/json", // The type of data you're sending
+    },
+  });
+}

@@ -12,18 +12,24 @@ import {
   Title,
 } from "chart.js";
 import { Pie, Bar } from "react-chartjs-2";
-import { getAllData, convert_data } from "./utils";
+import { getAllData, convert_data, sendSentence } from "./utils";
 function App() {
   const [toggle, setToggle] = useState(false); //toggling analyse button
   const [status, setStatus] = useState(false); //status of get request
-  const [outputt, setOutputt] = useState({
-    school: { count: 4, positive: 3, neutral: 0, negative: 1 },
-    students: { count: 4, positive: 2, neutral: 1, negative: 1 },
-    meeting: { count: 1, positive: 1, neutral: 0, negative: 0 },
-    scripts: { count: 5, positive: 0, neutral: 1, negative: 4 },
-    exams: { count: 6, positive: 1, neutral: 1, negative: 4 },
-    colleagues: { count: 1, positive: 0, neutral: 0, negative: 1 },
-  }); //to store output of get request
+  // const [outputt, setOutputt] = useState({
+  //   school: { count: 4, positive: 3, neutral: 0, negative: 1 },
+  //   students: { count: 4, positive: 2, neutral: 1, negative: 1 },
+  //   meeting: { count: 1, positive: 1, neutral: 0, negative: 0 },
+  //   scripts: { count: 5, positive: 0, neutral: 1, negative: 4 },
+  //   exams: { count: 6, positive: 1, neutral: 1, negative: 4 },
+  //   colleagues: { count: 1, positive: 0, neutral: 0, negative: 1 },
+  // }); //to store output of get request
+  const [outputt, setOutputt] = useState(null);
+  const [sentence, setSentence] = useState(null);
+  useEffect(() => {
+    // Runs ONCE after initial rendering
+    // and after every rendering ONLY IF `prop` or `state` changes
+  }, [outputt]);
 
   let loading = (
     <div
@@ -193,7 +199,7 @@ function App() {
       console.log(a);
       console.log(a["love"]["count"]);
       console.log("---");
-      setOutputt({ ...a });
+      setOutputt(a);
       console.log(a);
     });
     //timeout function is to simulate retrieving of data, setting status to true renders the analysis component
@@ -243,12 +249,23 @@ function App() {
                   style={{ margin: "0 10px 0 0" }}
                   type="text"
                   name="Sentence"
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    setSentence(e.target.value);
+                  }}
                 />
               </label>
               <input
                 style={{ margin: "0 10px 0 0" }}
                 type="submit"
                 value="Submit"
+                onClick={(e) => {
+                  e.preventDefault();
+                  // console.log("tesi");
+                  // console.log(sentence);
+                  // why cannot 400 bad request
+                  sendSentence("hello world");
+                }}
               />
             </form>
           </div>
